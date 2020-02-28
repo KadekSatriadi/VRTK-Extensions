@@ -3,8 +3,6 @@ using UnityEngine;
 
 public abstract class InteractionModule : MonoBehaviour
 {
-    public InteractionPolicy interactionPolicy;
-
     protected bool enable = true;
 
     public virtual void Enable()
