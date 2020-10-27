@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using VRTK;
 
-public class VRTK_Flick : InteractionModule
+public class VRTK_Flick : VRTK_InteractionModule
 {
     public VRTK_InteractGrab interactGrab;
     protected bool isGrabbing = false;
