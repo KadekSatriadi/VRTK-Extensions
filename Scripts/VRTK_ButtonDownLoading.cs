@@ -16,6 +16,7 @@ public class VRTK_ButtonDownLoading : MonoBehaviour
     public UnityEvent OnLoading;
     public UnityEvent OnCanceled;
     public UnityEvent OnFinishLoading;
+    
 
     private DateTime startLoadingTime;
     private bool isFinished = false;
@@ -34,6 +35,7 @@ public class VRTK_ButtonDownLoading : MonoBehaviour
         startLoadingTime = DateTime.Now;
         isFinished = false;
         isLoading = true;
+        OnStartLoading.Invoke();
         StartCoroutine(Tick());
     }
 
@@ -53,10 +55,11 @@ public class VRTK_ButtonDownLoading : MonoBehaviour
 
         duration = 0f;
 
-        while (duration < loadingTime && isLoading)
+        while (duration <= loadingTime && isLoading)
         {
             yield return new WaitForSecondsRealtime(tick);
             duration = (float)(System.DateTime.Now - startLoadingTime).TotalSeconds;
+            OnLoading.Invoke();
             Debug.Log(GetCurrentPercentage().ToString() + "%");
         };
 
