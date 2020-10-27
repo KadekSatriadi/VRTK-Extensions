@@ -1,7 +1,7 @@
 ﻿using VRTK;
 using UnityEngine;
 
-public abstract class InteractionModule : MonoBehaviour
+public abstract class VRTK_InteractionModule : MonoBehaviour
 {
     protected bool enable = true;
 
