@@ -1,6 +1,6 @@
 ﻿using VRTK;
 
-public static class VTK_ControllerEventRegistrator
+public static class VRTK_ControllerEventRegistrator
 {
     public enum Button
     {
