@@ -8,6 +8,7 @@ public class VRTK_ButtonDownLoading : MonoBehaviour
 {
     public VRTK_ControllerEventRegistrator.Button button;
     public VRTK_ControllerEvents controllerEvents;
+    public VRTK_InteractGrab grab;
 
     public float loadingTime = 2f;
     public float tick = 0.1f;
@@ -31,12 +32,15 @@ public class VRTK_ButtonDownLoading : MonoBehaviour
 
     private void ControllerEvents_ButtonPressed(object sender, ControllerInteractionEventArgs e)
     {
-        Debug.Log("Start loading");
-        startLoadingTime = DateTime.Now;
-        isFinished = false;
-        isLoading = true;
-        OnStartLoading.Invoke();
-        StartCoroutine(Tick());
+        if (!grab.IsGrabButtonPressed())
+        {
+            Debug.Log("Start loading");
+            startLoadingTime = DateTime.Now;
+            isFinished = false;
+            isLoading = true;
+            OnStartLoading.Invoke();
+            StartCoroutine(Tick());
+        }
     }
 
     private void ControllerEvents_ButtonReleased(object sender, ControllerInteractionEventArgs e)
