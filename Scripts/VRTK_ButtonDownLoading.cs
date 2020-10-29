@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using VRTK;
 
 public class VRTK_ButtonDownLoading : MonoBehaviour
@@ -12,6 +13,8 @@ public class VRTK_ButtonDownLoading : MonoBehaviour
 
     public float loadingTime = 2f;
     public float tick = 0.1f;
+
+    public Color color;
 
     public UnityEvent OnStartLoading;
     public UnityEvent OnLoading;
@@ -28,6 +31,7 @@ public class VRTK_ButtonDownLoading : MonoBehaviour
     {
         VRTK_ControllerEventRegistrator.Register(controllerEvents, button, VRTK_ControllerEventRegistrator.ButtonAction.Pressed, ControllerEvents_ButtonPressed);
         VRTK_ControllerEventRegistrator.Register(controllerEvents, button, VRTK_ControllerEventRegistrator.ButtonAction.Released, ControllerEvents_ButtonReleased);
+        GetComponentInChildren<Image>().color = color;
     }
 
     private void ControllerEvents_ButtonPressed(object sender, ControllerInteractionEventArgs e)

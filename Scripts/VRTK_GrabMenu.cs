@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using VRTK;
 
 
@@ -17,6 +18,12 @@ public class VRTK_GrabMenu : MonoBehaviour
     public float angle = 30f;
     public Vector3 buttonOffset;
     public AnimationCurve animationCurve;
+
+    [Header("Unity events")]
+    public UnityEvent OnMenuShown;
+    public UnityEvent OnMenuHidden;
+    public UnityEvent OnReleased;
+    public UnityEvent OnActionTriggered;
 
     private bool isGrabbed = false;
     private bool isSelecting = false;
@@ -41,7 +48,6 @@ public class VRTK_GrabMenu : MonoBehaviour
         if (isSelecting) HideButtons();
         isGrabbed = false;
         grabberEvents = null;
-
     }
 
     private void GrabObject_InteractableObjectGrabbed(object sender, InteractableObjectEventArgs e)
@@ -64,6 +70,7 @@ public class VRTK_GrabMenu : MonoBehaviour
         }
 
         isSelecting = false;
+        OnMenuHidden.Invoke();
     }
 
     private void ShowButtons()
@@ -83,6 +90,7 @@ public class VRTK_GrabMenu : MonoBehaviour
             }));
         }
 
+        OnMenuShown.Invoke();
     }
 
     private void GrabberEvents_ButtonPressed(object sender, ControllerInteractionEventArgs e)
@@ -93,6 +101,7 @@ public class VRTK_GrabMenu : MonoBehaviour
     private void GrabberEvents_ButtonReleased(object sender, ControllerInteractionEventArgs e)
     {
        if(isGrabbed) HideButtons();
+        OnReleased.Invoke();
     }
 
 
@@ -118,18 +127,25 @@ public class VRTK_GrabMenu : MonoBehaviour
         {
             if (!b.Equals(bh)) bh.gameObject.SetActive(false);
         }
-        StartCoroutine(MovementTween(b.transform, b.transform.position, b.transform.position + b.transform.up * 0.15f, delegate {
+        StartCoroutine(MovementTween(b.transform, b.transform.position, b.transform.position + Vector3.up * 0.15f, delegate {
             StartCoroutine(MovementTween(b.transform, b.transform.position, grabObject.transform.position, delegate {
                 b.OnTrigger.Invoke();
+                OnActionTriggered.Invoke();
                 b.gameObject.SetActive(false);
             }));
         }));
         isSelecting = false;
     }
 
-    private float GetScale(float d)
+    /// <summary>
+    /// Distance to scale transfer function
+    /// </summary>
+    /// <param name="d">distance to grabbed object</param>
+    /// /// <param name="maxScale">max scale factor</param>
+    /// <returns></returns>
+    private float GetScale(float d, float maxScale)
     {
-        float f =  Mathf.Log(radius / d) * scaleFactor;
+        float f =  Mathf.Log(radius / d) * maxScale;
         return (f > 1f) ? f : 1f;
     }
 
@@ -142,7 +158,7 @@ public class VRTK_GrabMenu : MonoBehaviour
             {
                 VRTK_GrabMenuButton b = buttons[i];
                 float d = Vector3.Distance(grabObject.transform.position, b.transform.position);
-                b.transform.localScale = initButtonScale * GetScale(d);
+                b.transform.localScale = initButtonScale * GetScale(d, scaleFactor);
 
                 if(d <= minDistanceToTrigger)
                 {
